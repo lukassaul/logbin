@@ -10,8 +10,8 @@
 	var coinjs = window.coinjs = function () { };
 
 	/* public vars */
-	coinjs.pub = 0x00;
-	coinjs.priv = 0x80;
+	coinjs.pub = 0x49;
+	coinjs.priv = 0x05;
 	coinjs.multisig = 0x05;
 	coinjs.hdkey = {'prv':0x0488ade4, 'pub':0x0488b21e};
 	coinjs.bech32 = {'charset':'qpzry9x8gf2tvdw0s3jn54khce6mua7l', 'version':0, 'hrp':'bc'};
@@ -75,7 +75,7 @@
 	/* generate a public key from a private key */
 	coinjs.newPubkey = function(hash){
 		var privateKeyBigInt = BigInteger.fromByteArrayUnsigned(Crypto.util.hexToBytes(hash));
-		var curve = EllipticCurve.getSECCurveByName("secp256k1");
+		var curve = EllipticCurve.getSECCurveByName("secp256r1");
 
 		var curvePt = curve.getG().multiply(privateKeyBigInt);
 		var x = curvePt.getX().toBigInteger();
@@ -322,7 +322,7 @@
 	/* decompress an compressed public key */
 	coinjs.pubkeydecompress = function(pubkey) {
 		if((typeof(pubkey) == 'string') && pubkey.match(/^[a-f0-9]+$/i)){
-			var curve = EllipticCurve.getSECCurveByName("secp256k1");
+			var curve = EllipticCurve.getSECCurveByName("secp256r1");
 			try {
 				var pt = curve.curve.decodePointHex(pubkey);
 				var x = pt.getX().toBigInteger();
@@ -657,7 +657,7 @@
 			var il = new BigInteger(hash.slice(0, 64), 16);
 			var ir = Crypto.util.hexToBytes(hash.slice(64,128));
 
-			var ecparams = EllipticCurve.getSECCurveByName("secp256k1");
+			var ecparams = EllipticCurve.getSECCurveByName("secp256r1");
 			var curve = ecparams.getCurve();
 
 			var k, key, pubkey, o;
@@ -976,7 +976,7 @@
 		/* add two outputs for stealth addresses to a transaction */
 		r.addstealth = function(stealth, value){
 			var ephemeralKeyBigInt = BigInteger.fromByteArrayUnsigned(Crypto.util.hexToBytes(coinjs.newPrivkey()));
-			var curve = EllipticCurve.getSECCurveByName("secp256k1");
+			var curve = EllipticCurve.getSECCurveByName("secp256r1");
 			
 			var p = EllipticCurve.fromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F");
 			var a = BigInteger.ZERO;
@@ -1344,7 +1344,7 @@
 			var hash = txhash || Crypto.util.hexToBytes(this.transactionHash(index, shType));
 
 			if(hash){
-				var curve = EllipticCurve.getSECCurveByName("secp256k1");
+				var curve = EllipticCurve.getSECCurveByName("secp256r1");
 				var key = coinjs.wif2privkey(wif);
 				var priv = BigInteger.fromByteArrayUnsigned(Crypto.util.hexToBytes(key['privkey']));
 				var n = curve.getN();
@@ -1388,7 +1388,7 @@
 			badrs = badrs || 0;
 			var key = coinjs.wif2privkey(wif);
 			var x = Crypto.util.hexToBytes(key['privkey'])
-			var curve = EllipticCurve.getSECCurveByName("secp256k1");
+			var curve = EllipticCurve.getSECCurveByName("secp256r1");
 			var N = curve.getN();
 
 			// Step: a
@@ -1787,7 +1787,7 @@
 
 		var Q;
 		if (coinjs.isArray(pubkey)) {
-			var ecparams = EllipticCurve.getSECCurveByName("secp256k1");
+			var ecparams = EllipticCurve.getSECCurveByName("secp256r1");
 			Q = EllipticCurve.PointFp.decodeFrom(ecparams.getCurve(), pubkey);
 		} else {
 			throw "Invalid format for pubkey value, must be byte array";
@@ -1798,7 +1798,7 @@
 	}
 
 	coinjs.verifySignatureRaw = function (e, r, s, Q) {
-		var ecparams = EllipticCurve.getSECCurveByName("secp256k1");
+		var ecparams = EllipticCurve.getSECCurveByName("secp256r1");
 		var n = ecparams.getN();
 		var G = ecparams.getG();
 
