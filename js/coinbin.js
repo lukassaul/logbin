@@ -51,7 +51,7 @@ $(document).ready(function() {
 					// }
 
 					$("#walletAddress").html(address);
-					$("#walletHistory").attr('href',explorer_addr+address);
+					$("#walletHistory").attr('href','https://twigchain.com/address/'+address);
 
 					$("#walletQrCode").html("");
 					var qrcode = new QRCode("walletQrCode");
@@ -179,7 +179,7 @@ $(document).ready(function() {
 		tx.addUnspent($("#walletAddress").html(), function(data){
 			console.log("data add unspent: ", data)
 			// var dvalue = (data.value/100000000).toFixed(8) * 1;
-			var dvalue = (data.value*1).toFixed(8) * 1;
+			var dvalue = (data.unspent.address[0].amount*1).toFixed(8) * 1;
 			total = (total*1).toFixed(8) * 1;
 			console.log('value data: ', dvalue)
 			console.log('total amount: ', total)
@@ -196,14 +196,15 @@ $(document).ready(function() {
 
 				// then sign
 				var signed = txunspent.sign($("#walletKeys .privkey").val());
+				console.log("signed: ", signed)
 
 				// and finally broadcast!
 
 				tx2.broadcast(function(data){
 					if(data.message){
-						$("#walletSendConfirmStatus").removeClass('hidden').addClass('alert-success').html('txid: <a href="https://coinb.in/tx/'+data.message+'" target="_blank">'+data.message+'</a>');
+						$("#walletSendConfirmStatus").removeClass('hidden').addClass('alert-success').html('txid: <a href="https://coinb.in/tx/'+data.message.result+'" target="_blank">'+data.message.result+'</a>');
 					} else {
-						$("#walletSendConfirmStatus").removeClass('hidden').addClass('alert-danger').html(unescape(data.error).replace(/\+/g,' '));
+						$("#walletSendConfirmStatus").removeClass('hidden').addClass('alert-danger').html(unescape(data.error.error.message).replace(/\+/g,' '));
 						$("#walletSendFailTransaction").removeClass('hidden');
 						$("#walletSendFailTransaction textarea").val(signed);
 						thisbtn.attr('disabled',false);
@@ -310,7 +311,7 @@ $(document).ready(function() {
 			// 	$("#walletBalance").html("0.00 LOG").attr('rel',v).fadeOut().fadeIn();
 			// }
 			if(data) {
-				var v = parseFloat(data)
+				var v = parseFloat(data.chain_stats.funded_txo_sum/100000000);
 				$("#walletBalance").html(v+" LOG").attr('rel',v).fadeOut().fadeIn();
 			} else {
 				$("#walletBalance").html("0.00 LOG").attr('rel',v).fadeOut().fadeIn();
@@ -1011,6 +1012,7 @@ $(document).ready(function() {
 		var tx = coinjs.transaction();
 		tx.listUnspent(redeem.addr, function(data){
 			if(redeem.addr) {
+				console.log("data test: ", data.message.address)
 				$("#redeemFromAddress").removeClass('hidden').html('<span class="glyphicon glyphicon-info-sign"></span> Retrieved unspent inputs from address <a href="'+explorer_addr+redeem.addr+'" target="_blank">'+redeem.addr+'</a>');
 				// $.each($(data).find("unspent").children(), function(i,o){
 				// 	var tx = $(o).find("tx_hash").text();
@@ -1020,13 +1022,13 @@ $(document).ready(function() {
 				//
 				// 	addOutput(tx, n, script, amount);
 				// });
-				for (var i in data.message) {
-					var net = data.message[i];
+				for (var i in data.message.address) {
+					var net = data.message.address[i];
 					var tx = net.txid;
 					console.log("txid text: ", net.txid)
 					var n = net.vout;
-					var script = net.scriptPubKey;
-					var amount = (redeem.redeemscript==true) ? redeem.decodedRs : net.amount;
+					var script = net.scriptpubkey;
+					var amount = (redeem.redeemscript==true) ? redeem.decodedRs : ((net.amount*1)/100000000).toFixed(8);
 					addOutput(tx, n, script, amount);
 				}
 			}
@@ -1204,7 +1206,7 @@ $(document).ready(function() {
 		$.ajax ({
 			type: "POST",
 			// url: coinjs.host+'?uid='+coinjs.uid+'&key='+coinjs.key+'&setmodule=bitcoin&request=sendrawtransaction',
-			url: coinjs.host+'/broadcast',
+			url: 'http://localhost:3001/api/broadcast',
 			data: {'rawtx':$("#rawTransaction").val()},
 			// dataType: "xml",
 			error: function(data) {
@@ -1213,10 +1215,10 @@ $(document).ready(function() {
 			},
       success: function(data) {
 				console.log("ajax broadcast success", data.message)
-				$("#rawTransactionStatus").html(unescape(data.message).replace(/\+/g,' ')).removeClass('hidden');
+				$("#rawTransactionStatus").html(unescape(data.message.result).replace(/\+/g,' ')).removeClass('hidden');
 				if(data.message){
 					$("#rawTransactionStatus").addClass('alert-success').removeClass('alert-danger');
-					$("#rawTransactionStatus").html('txid: '+ data.message);
+					$("#rawTransactionStatus").html('txid: '+ data.message.result);
 				} else {
 					$("#rawTransactionStatus").addClass('alert-danger').removeClass('alert-success').prepend('<span class="glyphicon glyphicon-exclamation-sign"></span> ');
 				}

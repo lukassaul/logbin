@@ -23,7 +23,7 @@
 
 	/* bit(coinb.in) api vars */
 	// coinjs.host = ('https:'==document.location.protocol?'https://':'http://')+'coinb.in/api/';
-	coinjs.host = 'http://localhost:3000/api'
+	coinjs.host = 'http://localhost:3001/api'
 	coinjs.uid = '1';
 	coinjs.key = '12345678901234567890123456789012';
 
@@ -318,7 +318,7 @@
 	/* retreive the balance from a given address */
 	coinjs.addressBalance = function(address, callback){
 		// coinjs.ajax(coinjs.host+'?uid='+coinjs.uid+'&key='+coinjs.key+'&setmodule=addresses&request=bal&address='+address+'&r='+Math.random(), callback, "GET");
-		coinjs.ajax('http://194.163.183.218:3001/ext/getbalance/'+ address, callback, "GET")
+		coinjs.ajax('http://localhost:3000/address/'+ address, callback, "GET")
 	}
 
 	/* decompress an compressed public key */
@@ -1123,7 +1123,7 @@
 			console.log("txhex broadcast: ", txhex)
 			var tx = txhex || this.serialize();
 			// coinjs.ajax(coinjs.host+'?uid='+coinjs.uid+'&key='+coinjs.key+'&setmodule=bitcoin&request=sendrawtransaction&rawtx='+tx+'&r='+Math.random(), callback, "GET");
-			coinjs.ajax(coinjs.host+'/broadcast/r?transaction='+tx, callback, "GET")
+			coinjs.ajax('http://localhost:3001/api/broadcast/r?transaction='+tx, callback, "GET")
 		}
 
 		/* generate the transaction hash to sign from a transaction input */
@@ -1910,7 +1910,7 @@
 		// 	try {
 		// 		x = new ActiveXObject('Microsoft.XMLHTTP')
 		// 	} catch(e) {
-				x = new XMLHttpRequest()
+		x = new XMLHttpRequest()
 		// 	}
 		// }
 
