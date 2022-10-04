@@ -11,7 +11,7 @@
 
 	/* public vars */
 	coinjs.pub = 0x49;
-	coinjs.priv = 0x05;
+	coinjs.priv = 0xC9;
 	coinjs.multisig = 0x05;
 	coinjs.hdkey = {'prv':0x0488ade4, 'pub':0x0488b21e};
 	coinjs.bech32 = {'charset':'qpzry9x8gf2tvdw0s3jn54khce6mua7l', 'version':0, 'hrp':'bc'};
@@ -19,7 +19,7 @@
 	coinjs.compressed = false;
 
 	/* other vars */
-	coinjs.developer = '3K1oFZMks41C7qDYBsr72SYjapLqDuSYuN'; //bitcoin
+	coinjs.developer = 'WZDmRTrXTRpJngKmYH8WdN3ptCHsSGiJVV'; //woodcoin
 
 	/* bit(coinb.in) api vars */
 	// coinjs.host = ('https:'==document.location.protocol?'https://':'http://')+'coinb.in/api/';
@@ -33,6 +33,11 @@
 	coinjs.newKeys = function(input){
 		var privkey = (input) ? Crypto.SHA256(input) : this.newPrivkey();
 		var pubkey = this.newPubkey(privkey);
+		console.log("coinjs private key ", privkey)
+		console.log("coinjs public key ", pubkey)
+		console.log("pub to address: ", this.pubkey2address(pubkey))
+		console.log("priv to wif: ", this.privkey2wif(privkey))
+		console.log("compressed ", this.compressed)
 		return {
 			'privkey': privkey,
 			'pubkey': pubkey,
@@ -1902,21 +1907,21 @@
 		console.log("f: ", f)
 		console.log("m: ", m)
 		console.log("a: ", a)
-		m = "GET"
-		// var x = false;
-		// try{
-		// 	x = new ActiveXObject('Msxml2.XMLHTTP')
-		// } catch(e) {
-		// 	try {
-		// 		x = new ActiveXObject('Microsoft.XMLHTTP')
-		// 	} catch(e) {
-		x = new XMLHttpRequest()
-		// 	}
-		// }
+		// m = "GET"
+		var x = false;
+		try{
+			x = new ActiveXObject('Msxml2.XMLHTTP')
+		} catch(e) {
+			try {
+				x = new ActiveXObject('Microsoft.XMLHTTP')
+			} catch(e) {
+				x = new XMLHttpRequest()
+			}
+		}
 
-		// if(x==false) {
-		// 	return false;
-		// }
+		if(x==false) {
+			return false;
+		}
 
 		x.open(m, u, true);
 		x.onreadystatechange=function(){
