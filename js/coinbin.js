@@ -316,7 +316,7 @@ $(document).ready(function() {
 			// 	$("#walletBalance").html("0.00 LOG").attr('rel',v).fadeOut().fadeIn();
 			// }
 			if(data) {
-				var v = parseFloat((data.chain_stats.funded_txo_sum - data.chain_stats.spent_txo_sum)/100000000);
+				var v = parseFloat((data.message.chain_stats.funded_txo_sum - data.message.chain_stats.spent_txo_sum)/100000000);
 				$("#walletBalance").html(v+" LOG").attr('rel',v).fadeOut().fadeIn();
 			} else {
 				$("#walletBalance").html("0.00 LOG").attr('rel',v).fadeOut().fadeIn();

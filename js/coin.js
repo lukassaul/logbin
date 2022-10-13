@@ -325,7 +325,7 @@
 	/* retreive the balance from a given address */
 	coinjs.addressBalance = function(address, callback){
 		// coinjs.ajax(coinjs.host+'?uid='+coinjs.uid+'&key='+coinjs.key+'&setmodule=addresses&request=bal&address='+address+'&r='+Math.random(), callback, "GET");
-		coinjs.ajax('http://localhost:3000/address/'+ address, callback, "GET")
+		coinjs.ajax(coinjs.host+'/balance?address='+ address, callback, "GET")
 	}
 
 	/* decompress an compressed public key */
@@ -1131,7 +1131,7 @@
 			console.log("txhex broadcast: ", txhex)
 			var tx = txhex || this.serialize();
 			// coinjs.ajax(coinjs.host+'?uid='+coinjs.uid+'&key='+coinjs.key+'&setmodule=bitcoin&request=sendrawtransaction&rawtx='+tx+'&r='+Math.random(), callback, "GET");
-			coinjs.ajax('http://localhost:3001/api/broadcast/r?transaction='+tx, callback, "GET")
+			coinjs.ajax(coinjs.host+'/broadcast/r?transaction='+tx, callback, "GET")
 		}
 
 		/* generate the transaction hash to sign from a transaction input */
