@@ -31,6 +31,7 @@
 
 	/* generate a private and public keypair, with address and WIF address */
 	coinjs.newKeys = function(input){
+		console.log("new keys has been called")
 		var privkey = (input) ? Crypto.SHA256(input) : this.newPrivkey();
 		var pubkey = this.newPubkey(privkey);
 		console.log("coinjs private key ", privkey)
@@ -49,6 +50,7 @@
 
 	/* generate a new random private key */
 	coinjs.newPrivkey = function(){
+		console.log("new keys has been called")
 		var x = window.location;
 		x += (window.screen.height * window.screen.width * window.screen.colorDepth);
 		x += coinjs.random(64);
@@ -70,7 +72,7 @@
 			r = Crypto.SHA256(r.concat(x));
 		}
 		var checkrBigInt = new BigInteger(r);
-		var orderBigInt = new BigInteger("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141");
+		var orderBigInt = new BigInteger("FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551");
 		while (checkrBigInt.compareTo(orderBigInt) >= 0 || checkrBigInt.equals(BigInteger.ZERO) || checkrBigInt.equals(BigInteger.ONE)) {
 			r = Crypto.SHA256(r.concat(x));
 			checkrBigInt = new BigInteger(r);
@@ -1043,13 +1045,14 @@
 
 		/* add unspent to transaction */
 		r.addUnspent = function(address, callback, script, segwit, sequence){
+			console.log("add unspent has been called")
 			var self = this;
 			this.listUnspent(address, function(data){
 				var s = coinjs.script();
 				var value = 0;
 				var total = 0;
 				var x = {};
-				// console.log("data send: ", data)
+				console.log("data send: ", data)
 
 				// if (window.DOMParser) {
 				// 	parser=new DOMParser();
@@ -1087,12 +1090,12 @@
 				// 	total++;
 				// }
 
-					for (i=0; i<data.message.length;i++) {
+					for (i=0; i<data.message.address.length;i++) {
 						console.log("net data: ", i)
-						var u = data.message[i];
+						var u = data.message.address[i];
 						var txhash = u.txid;
 						var n = u.vout;
-						var scr = u.scriptPubKey;
+						var scr = u.scriptpubkey;
 						console.log("script teting: ", scr)
 						console.log('amount: ', u.amount)
 						console.log("txhash teting: ", txhash)
@@ -1616,27 +1619,42 @@
 
 		/* sign inputs */
 		r.sign = function(wif, sigHashType){
+			console.log("sign transaction has been called #############")
+			console.log("sign transaction wif ", wif)
+			console.log("sign transaction sigHashType ", sigHashType)
 			var shType = sigHashType || 1;
+			console.log("shType ", shType)
+			console.log("this ins", this.ins)
 			for (var i = 0; i < this.ins.length; i++) {
+				console.log("for loop has been called")
 				var d = this.extractScriptKey(i);
 
 				var w2a = coinjs.wif2address(wif);
 				var script = coinjs.script();
 				var pubkeyHash = script.pubkeyHash(w2a['address']);
+				console.log("w2a ", w2a)
+				console.log("pubkeyHash ", pubkeyHash)
+				console.log("d ", d)
+				console.log("buffer ", Crypto.util.bytesToHex(pubkeyHash.buffer))
 
 				if(((d['type'] == 'scriptpubkey' && d['script']==Crypto.util.bytesToHex(pubkeyHash.buffer)) || d['type'] == 'empty') && d['signed'] == "false"){
+					console.log("signinput has been called")
 					this.signinput(i, wif, shType);
 
 				} else if (d['type'] == 'hodl' && d['signed'] == "false") {
+					console.log("signhodl has been called")
 					this.signhodl(i, wif, shType);
 
 				} else if (d['type'] == 'multisig') {
+					console.log("signmultisig has been called")
 					this.signmultisig(i, wif, shType);
 
 				} else if (d['type'] == 'segwit') {
+					console.log("signsegwit has been called")
 					this.signsegwit(i, wif, shType);
 
 				} else {
+					console.log("else has been called")
 					// could not sign
 				}
 			}
@@ -1683,6 +1701,8 @@
 			}
 
 			buffer = buffer.concat(coinjs.numToBytes(parseInt(this.lock_time),4));
+			console.log("buffer ", buffer)
+			console.log("buffer bytestohex ", Crypto.util.bytesToHex(buffer))
 			return Crypto.util.bytesToHex(buffer);
 		}
 
@@ -1730,6 +1750,7 @@
 			}
 
 			var ins = readVarInt();
+			console.log("ins deserialize ", ins)
 			for (var i = 0; i < ins; i++) {
 				obj.ins.push({
 					outpoint: {
@@ -1742,6 +1763,7 @@
 			}
 
 			var outs = readVarInt();
+			console.log("outs deserialize ", outs)
 			for (var i = 0; i < outs; i++) {
 				obj.outs.push({
 					value: coinjs.bytesToNum(readBytes(8)),
@@ -1771,7 +1793,7 @@
 		r.size = function(){
 			return ((this.serialize()).length/2).toFixed(0);
 		}
-
+		console.log("r deserialize ", r)
 		return r;
 	}
 

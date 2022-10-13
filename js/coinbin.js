@@ -186,6 +186,7 @@ $(document).ready(function() {
 			console.log('value data: ', dvalue)
 			console.log('total amount: ', total)
 
+
 			if(dvalue>=total){
 				var change = dvalue-total;
 				if((change*1)>0){
@@ -194,11 +195,12 @@ $(document).ready(function() {
 
 				// clone the transaction with out using coinjs.clone() function as it gives us trouble
 				var tx2 = coinjs.transaction();
+				console.log("tx2 ", tx2)
 				var txunspent = tx2.deserialize(tx.serialize());
-				console.log("txunspent ", txunspent)
 
 				// then sign
 				var signed = txunspent.sign($("#walletKeys .privkey").val());
+				console.log("private key to sign: ", $("#walletKeys .privkey").val())
 				console.log("signed: ", signed)
 
 				// and finally broadcast!
@@ -655,6 +657,10 @@ $(document).ready(function() {
 					// underestimating won't hurt. Just showing a warning window anyways.
 					estimatedTxSize += 147
 				}
+				console.log("txid ", $(".txId",o).val())
+				console.log("txIdN ", $(".txIdN",o).val())
+				console.log("txIdScript ", $(".txIdScript",o).val())
+				console.log("seq ", seq)
 
 				tx.addinput($(".txId",o).val(), $(".txIdN",o).val(), $(".txIdScript",o).val(), seq);
 			} else {
@@ -1640,6 +1646,7 @@ $(document).ready(function() {
 			$("#signedDataError").addClass('hidden');
 			try {
 				var tx = coinjs.transaction();
+				console.log('tx sign ', tx)
 				var t = tx.deserialize(script.val());
 
 				var signed = t.sign(wifkey.val(), $("#sighashType option:selected").val());
@@ -1647,7 +1654,7 @@ $(document).ready(function() {
 				$("#signedData .txSize").html(t.size());
 				$("#signedData").removeClass('hidden').fadeIn();
 			} catch(e) {
-				// console.log(e);
+				 console.log(e);
 			}
 		} else {
 			$("#signedDataError").removeClass('hidden');
