@@ -60,8 +60,7 @@ $(document).ready(function() {
 					$("#walletKeys .privkey").val(wif);
 					$("#walletKeys .pubkey").val(pubkey);
 					$("#walletKeys .privkeyaes").val(privkeyaes);
-					console.log("private key wif ", wif)
-					console.log("private key aes ", privkeyaes)
+					
 
 					$("#openLogin").hide();
 					$("#openWallet").removeClass("hidden").show();
@@ -179,12 +178,11 @@ $(document).ready(function() {
 		}
 
 		tx.addUnspent($("#walletAddress").html(), function(data){
-			console.log("data add unspent: ", data)
+			
 			// var dvalue = (data.value/100000000).toFixed(8) * 1;
 			var dvalue = (data.unspent.address[0].amount/100000000).toFixed(8) * 1;
 			total = (total*1).toFixed(8) * 1;
-			console.log('value data: ', dvalue)
-			console.log('total amount: ', total)
+			
 
 
 			if(dvalue>=total){
@@ -195,13 +193,12 @@ $(document).ready(function() {
 
 				// clone the transaction with out using coinjs.clone() function as it gives us trouble
 				var tx2 = coinjs.transaction();
-				console.log("tx2 ", tx2)
+				
 				var txunspent = tx2.deserialize(tx.serialize());
 
 				// then sign
 				var signed = txunspent.sign($("#walletKeys .privkey").val());
-				console.log("private key to sign: ", $("#walletKeys .privkey").val())
-				console.log("signed: ", signed)
+				
 
 				// and finally broadcast!
 
@@ -657,10 +654,7 @@ $(document).ready(function() {
 					// underestimating won't hurt. Just showing a warning window anyways.
 					estimatedTxSize += 147
 				}
-				console.log("txid ", $(".txId",o).val())
-				console.log("txIdN ", $(".txIdN",o).val())
-				console.log("txIdScript ", $(".txIdScript",o).val())
-				console.log("seq ", seq)
+				
 
 				tx.addinput($(".txId",o).val(), $(".txIdN",o).val(), $(".txIdScript",o).val(), seq);
 			} else {
@@ -1017,12 +1011,12 @@ $(document).ready(function() {
 
 	/* default function to retreive unspent outputs*/
 	function listUnspentDefault(redeem){
-		console.log("redeem: ", redeem)
+		
 		var tx = coinjs.transaction();
 		tx.listUnspent(redeem.addr, function(data){
 			if (data.message.address) {
 				if(redeem.addr) {
-					console.log("data test: ", data.message)
+					
 					$("#redeemFromAddress").removeClass('hidden').html('<span class="glyphicon glyphicon-info-sign"></span> Retrieved unspent inputs from address <a href="https://twigchain.com/address/'+redeem.addr+'" target="_blank">'+redeem.addr+'</a>');
 					// $.each($(data).find("unspent").children(), function(i,o){
 					// 	var tx = $(o).find("tx_hash").text();
@@ -1035,7 +1029,7 @@ $(document).ready(function() {
 					for (var i in data.message.address) {
 						var net = data.message.address[i];
 						var tx = net.txid;
-						console.log("txid text: ", net.txid)
+						
 						var n = net.vout;
 						var script = net.scriptpubkey;
 						var amount = (redeem.redeemscript==true) ? redeem.decodedRs : ((net.amount*1)/100000000).toFixed(8);
@@ -1225,11 +1219,11 @@ $(document).ready(function() {
 			data: {'rawtx':$("#rawTransaction").val()},
 			// dataType: "xml",
 			error: function(data) {
-				console.log("ajax broadcast error", data)
+				
 				$("#rawTransactionStatus").addClass('alert-danger').removeClass('alert-success').removeClass("hidden").html(" There was an error submitting your request, please try again").prepend('<span class="glyphicon glyphicon-exclamation-sign"></span>');
 			},
       success: function(data) {
-				console.log("ajax broadcast success", data.message)
+				
 				$("#rawTransactionStatus").html(unescape(data.message.result).replace(/\+/g,' ')).removeClass('hidden');
 				if(data.message){
 					$("#rawTransactionStatus").addClass('alert-success').removeClass('alert-danger');
@@ -1646,7 +1640,7 @@ $(document).ready(function() {
 			$("#signedDataError").addClass('hidden');
 			try {
 				var tx = coinjs.transaction();
-				console.log('tx sign ', tx)
+				
 				var t = tx.deserialize(script.val());
 
 				var signed = t.sign(wifkey.val(), $("#sighashType option:selected").val());
@@ -2086,19 +2080,21 @@ $(document).ready(function() {
 		$("#feeStatsReload").attr('disabled',true);
 		$.ajax ({
 			type: "GET",
-			url: "https://coinb.in/api/?uid=1&key=12345678901234567890123456789012&setmodule=fees&request=stats",
-			dataType: "xml",
+			// url: "https://coinb.in/api/?uid=1&key=12345678901234567890123456789012&setmodule=fees&request=stats",
+			// dataType: "xml",
+			url: 'http://localhost:3001/api/txfee',
 			error: function(data) {
 			},
 			success: function(data) {
-				$("#fees .recommended .blockHeight").html('<a href="https://coinb.in/height/'+$(data).find("height").text()+'" target="_blank">'+$(data).find("height").text()+'</a>');
-				$("#fees .recommended .blockHash").html($(data).find("block").text());
-				$("#fees .recommended .blockTime").html($(data).find("timestamp").text());
-				$("#fees .recommended .blockDateTime").html(unescape($(data).find("datetime").text()).replace(/\+/g,' '));
-				$("#fees .recommended .txId").html('<a href="https://coinb.in/tx/'+$(data).find("txid").text()+'" target="_blank">'+$(data).find("txid").text()+'</a>');
-				$("#fees .recommended .txSize").html($(data).find("txsize").text());
-				$("#fees .recommended .txFee").html($(data).find("txfee").text());
-				$("#fees .feeSatByte").html($(data).find("satbyte").text());
+				
+				$("#fees .recommended .blockHeight").html('<a href="https://twigchain.com/block/'+data.message.block+'" target="_blank">'+data.message.height+'</a>');
+				$("#fees .recommended .blockHash").html(data.message.block);
+				// $("#fees .recommended .blockTime").html($(data).find("timestamp").text());
+				// $("#fees .recommended .blockDateTime").html(unescape($(data).find("datetime").text()).replace(/\+/g,' '));
+				$("#fees .recommended .txId").html('<a href="https://twigchain.com/tx/'+data.message.txid+'" target="_blank">'+data.message.txid+'</a>');
+				$("#fees .recommended .txSize").html(data.message.txsize);
+				// $("#fees .recommended .txFee").html($(data).find("txfee").text());
+				$("#fees .feeSatByte").html(data.message.satbyte);
 
 				mathFees();
 			},

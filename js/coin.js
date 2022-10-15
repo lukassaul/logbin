@@ -31,14 +31,10 @@
 
 	/* generate a private and public keypair, with address and WIF address */
 	coinjs.newKeys = function(input){
-		console.log("new keys has been called")
+		
 		var privkey = (input) ? Crypto.SHA256(input) : this.newPrivkey();
 		var pubkey = this.newPubkey(privkey);
-		console.log("coinjs private key ", privkey)
-		console.log("coinjs public key ", pubkey)
-		console.log("pub to address: ", this.pubkey2address(pubkey))
-		console.log("priv to wif: ", this.privkey2wif(privkey))
-		console.log("compressed ", this.compressed)
+		
 		return {
 			'privkey': privkey,
 			'pubkey': pubkey,
@@ -50,7 +46,7 @@
 
 	/* generate a new random private key */
 	coinjs.newPrivkey = function(){
-		console.log("new keys has been called")
+		
 		var x = window.location;
 		x += (window.screen.height * window.screen.width * window.screen.colorDepth);
 		x += coinjs.random(64);
@@ -1045,14 +1041,14 @@
 
 		/* add unspent to transaction */
 		r.addUnspent = function(address, callback, script, segwit, sequence){
-			console.log("add unspent has been called")
+			
 			var self = this;
 			this.listUnspent(address, function(data){
 				var s = coinjs.script();
 				var value = 0;
 				var total = 0;
 				var x = {};
-				console.log("data send: ", data)
+				
 
 				// if (window.DOMParser) {
 				// 	parser=new DOMParser();
@@ -1091,23 +1087,19 @@
 				// }
 
 					for (i=0; i<data.message.address.length;i++) {
-						console.log("net data: ", i)
+						
 						var u = data.message.address[i];
 						var txhash = u.txid;
 						var n = u.vout;
 						var scr = u.scriptpubkey;
-						console.log("script teting: ", scr)
-						console.log('amount: ', u.amount)
-						console.log("txhash teting: ", txhash)
-						console.log("vout: ", n)
+						
 
 						var seq = sequence || false;
 						self.addinput(txhash, n, scr, seq);
 						value += u.amount * 1;
 						total++;
 					}
-					console.log("Total: ", total)
-					console.log("Value: ", value)
+					
 					x.unspent = data.message;
 					x.value = value;
 					x.total = total;
@@ -1128,7 +1120,7 @@
 
 		/* broadcast a transaction */
 		r.broadcast = function(callback, txhex){
-			console.log("txhex broadcast: ", txhex)
+			
 			var tx = txhex || this.serialize();
 			// coinjs.ajax(coinjs.host+'?uid='+coinjs.uid+'&key='+coinjs.key+'&setmodule=bitcoin&request=sendrawtransaction&rawtx='+tx+'&r='+Math.random(), callback, "GET");
 			coinjs.ajax(coinjs.host+'/broadcast/r?transaction='+tx, callback, "GET")
@@ -1619,38 +1611,32 @@
 
 		/* sign inputs */
 		r.sign = function(wif, sigHashType){
-			console.log("sign transaction has been called #############")
-			console.log("sign transaction wif ", wif)
-			console.log("sign transaction sigHashType ", sigHashType)
+			
 			var shType = sigHashType || 1;
-			console.log("shType ", shType)
-			console.log("this ins", this.ins)
+			
 			for (var i = 0; i < this.ins.length; i++) {
-				console.log("for loop has been called")
+				
 				var d = this.extractScriptKey(i);
 
 				var w2a = coinjs.wif2address(wif);
 				var script = coinjs.script();
 				var pubkeyHash = script.pubkeyHash(w2a['address']);
-				console.log("w2a ", w2a)
-				console.log("pubkeyHash ", pubkeyHash)
-				console.log("d ", d)
-				console.log("buffer ", Crypto.util.bytesToHex(pubkeyHash.buffer))
+				
 
 				if(((d['type'] == 'scriptpubkey' && d['script']==Crypto.util.bytesToHex(pubkeyHash.buffer)) || d['type'] == 'empty') && d['signed'] == "false"){
-					console.log("signinput has been called")
+					
 					this.signinput(i, wif, shType);
 
 				} else if (d['type'] == 'hodl' && d['signed'] == "false") {
-					console.log("signhodl has been called")
+					
 					this.signhodl(i, wif, shType);
 
 				} else if (d['type'] == 'multisig') {
-					console.log("signmultisig has been called")
+					
 					this.signmultisig(i, wif, shType);
 
 				} else if (d['type'] == 'segwit') {
-					console.log("signsegwit has been called")
+					
 					this.signsegwit(i, wif, shType);
 
 				} else {
@@ -1701,8 +1687,7 @@
 			}
 
 			buffer = buffer.concat(coinjs.numToBytes(parseInt(this.lock_time),4));
-			console.log("buffer ", buffer)
-			console.log("buffer bytestohex ", Crypto.util.bytesToHex(buffer))
+			
 			return Crypto.util.bytesToHex(buffer);
 		}
 
@@ -1750,7 +1735,7 @@
 			}
 
 			var ins = readVarInt();
-			console.log("ins deserialize ", ins)
+			
 			for (var i = 0; i < ins; i++) {
 				obj.ins.push({
 					outpoint: {
@@ -1763,7 +1748,7 @@
 			}
 
 			var outs = readVarInt();
-			console.log("outs deserialize ", outs)
+			
 			for (var i = 0; i < outs; i++) {
 				obj.outs.push({
 					value: coinjs.bytesToNum(readBytes(8)),
@@ -1793,7 +1778,7 @@
 		r.size = function(){
 			return ((this.serialize()).length/2).toFixed(0);
 		}
-		console.log("r deserialize ", r)
+		
 		return r;
 	}
 
@@ -1925,10 +1910,7 @@
 
 	/* raw ajax function to avoid needing bigger frame works like jquery, mootools etc */
 	coinjs.ajax = function(u, f, m, a){
-		console.log("u: ", u)
-		console.log("f: ", f)
-		console.log("m: ", m)
-		console.log("a: ", a)
+		
 		// m = "GET"
 		var x = false;
 		try{
@@ -1949,7 +1931,7 @@
 		x.onreadystatechange=function(){
 			if((x.readyState==4) && f)
 					var testjson = JSON.parse(x.responseText)
-					console.log(testjson)
+					
 					f(testjson);
 
 		};
