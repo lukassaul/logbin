@@ -3,7 +3,8 @@ html, body {
 }
 
 body {
-	background-color:#ffffff;
+	background-color:#0A0A0A;
+	
 }
 
 .displaynone {
@@ -21,7 +22,7 @@ body {
 
 #footer {
 	height: 60px;
-	background-color: #f5f5f5;
+	background-color: #0A0A0A;
 	padding-top: 20px;
 }
 
@@ -117,4 +118,23 @@ body {
 
 #fees .total {
 	font-size: 100px;
+}
+
+.green {
+	color: #58CD36;
+}
+
+.jumbotron {
+	background: none;
+	
+}
+
+#content {
+	background-color: #000;
+}
+
+#background-bank {
+	background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url("../images/log.png");
+	background-repeat: no-repeat;
+	background-position: center;
 }

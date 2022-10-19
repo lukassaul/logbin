@@ -422,6 +422,7 @@ $(document).ready(function() {
 
 		var keys = [];
 		$.each($("#multisigPubKeys .pubkey"), function(i,o){
+			console.log("o vallue: ", coinjs.pubkeydecompress($(o).val()))
 			if(coinjs.pubkeydecompress($(o).val())){
 				keys.push($(o).val());
 				$(o).parent().removeClass('has-error');
@@ -429,7 +430,7 @@ $(document).ready(function() {
 				$(o).parent().addClass('has-error');
 			}
 		});
-
+		console.log("keys multisig: ", keys)
 		if(($("#multisigPubKeys .pubkey").parent().hasClass('has-error')==false) && $("#releaseCoins").parent().hasClass('has-error')==false){
 			var sigsNeeded = $("#releaseCoins option:selected").html();
 			var multisig =  coinjs.pubkeys2MultisigAddress(keys, sigsNeeded);
@@ -654,8 +655,11 @@ $(document).ready(function() {
 					// underestimating won't hurt. Just showing a warning window anyways.
 					estimatedTxSize += 147
 				}
-				
 
+				console.log("txid ", $(".txId",o).val())
+				console.log("txIdN ", $(".txIdN",o).val())
+				console.log("txIdScript ", $(".txIdScript",o).val())
+				
 				tx.addinput($(".txId",o).val(), $(".txIdN",o).val(), $(".txIdScript",o).val(), seq);
 			} else {
 				$('#putTabs a[href="#txinputs"]').attr('style','color:#a94442;');
@@ -700,7 +704,7 @@ $(document).ready(function() {
 				$("#transactionCreate").removeClass("hidden");
 
 				// Check fee against hard 0.01 as well as fluid 200 satoshis per byte calculation.
-				if($("#transactionFee").val()>=0.01 || $("#transactionFee").val()>= estimatedTxSize * 200 * 1e-8){
+				if($("#transactionFee").val()>=0.01 || $("#transactionFee").val()>= estimatedTxSize * 400 * 1e-8){
 					$("#modalWarningFeeAmount").html($("#transactionFee").val());
 					$("#modalWarningFee").modal("show");
 				}
@@ -1014,6 +1018,8 @@ $(document).ready(function() {
 		
 		var tx = coinjs.transaction();
 		tx.listUnspent(redeem.addr, function(data){
+			console.log("data address ", data)
+			console.log("redeem ", redeem)
 			if (data.message.address) {
 				if(redeem.addr) {
 					
@@ -1031,8 +1037,8 @@ $(document).ready(function() {
 						var tx = net.txid;
 						
 						var n = net.vout;
-						var script = net.scriptpubkey;
-						var amount = (redeem.redeemscript==true) ? redeem.decodedRs : ((net.amount*1)/100000000).toFixed(8);
+						var script = (redeem.redeemscript==true) ? redeem.decodedRs : net.scriptpubkey;
+						var amount = ((net.amount*1)/100000000).toFixed(8);
 						addOutput(tx, n, script, amount);
 					}
 				}

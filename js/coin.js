@@ -338,7 +338,6 @@
 				publicKeyBytes.unshift(0x04);
 				return Crypto.util.bytesToHex(publicKeyBytes);
 			} catch (e) {
-				// console.log(e);
 				return false;
 			}
 		}
