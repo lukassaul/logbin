@@ -138,3 +138,136 @@ body {
 	background-repeat: no-repeat;
 	background-position: center;
 }
+
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+    background-color: #58CD36 !important;
+	border-color: #58CD36 !important;
+}
+
+.btn-info, .btn-info:hover, .btn-info:active, .btn-info:visited {
+    background-color: #58CD36 !important;
+	border-color: #58CD36 !important;
+}
+
+.badge-primary, .badge-primary:hover, .badge-primary:active, .badge-primary:visited {
+    background-color: #58CD36 !important;
+	border-color: #58CD36 !important;
+}
+
+.incenter {
+	text-align: center;
+}
+
+.biglog {
+	font-size: 107px;
+	color: #CFCFCF;
+}
+
+.welcome {
+	font-size: 42px;
+	color: #CFCFCF;
+}
+
+.jumbotron h1 {
+	color: #CFCFCF !important;
+}
+
+.jumbotron p {
+	color: #CFCFCF !important;
+	font-size: 40px;
+}
+
+.jumbotron {
+	padding-top: 0 !important;
+	padding-left: 100px !important;
+	padding-right: 100px !important;
+}
+
+.open {
+	color: #CFCFCF;
+}
+
+.openp {
+	color: #CFCFCF;
+}
+
+
+
+
+/* input[type=text] {
+	background-color: #323232;
+	border-color: #323232;
+} */
+
+#transactionFee {
+	background-color: #323232;
+	border-color: #323232;
+  	color: white;
+}
+
+
+
+.tab-content {
+border-top: transparent;
+padding: 15px;
+}
+
+.tab-content .tab-pane {
+background-color: rgb(0, 0, 0);
+color: #CFCFCF;
+}
+
+.navbar-toggle .icon-bar {
+	background-color: white !important; 
+}
+
+.headtext a {
+	color: #CFCFCF;
+}
+
+.navbar {
+	margin-bottom: 10px !important;
+	margin-top: 10px !important;
+}
+
+.form-control[disabled] {
+	background-color: #323232 !important;
+	color: #CFCFCF !important;
+}
+
+.form-control {
+	background-color: #323232 !important;
+	color: #CFCFCF !important;
+	border: 1px solid #323232 !important;
+}
+
+.well {
+	background-color: #323232 !important;
+	border: 1px solid #323232 !important;
+}
+
+a.optionsCollapse {
+	color:#58CD36;
+}
+
+a#signAdvancedCollapse {
+	color:#58CD36;
+}
+
+.dropdown-menu {
+	background-color: #323232 !important;
+}
+
+.dropdown-menu>li>a {
+	color: #CFCFCF !important;
+}
+
+.alert-warning {
+	background-color: #B3D3AA;
+	border-color: #B3D3AA;
+	color: #000;
+}
+
+.nav-pills>li.active>a {
+	background-color: #58CD36;
+}
