@@ -271,3 +271,24 @@ a#signAdvancedCollapse {
 .nav-pills>li.active>a {
 	background-color: #58CD36;
 }
+
+@media screen and (max-width: 604px) {
+	.jumbotron {
+		padding-left: 5px !important;
+		padding-right: 5px !important;
+	}
+	.biglog {
+		font-size: 70px !important;
+	}
+	.welcome {
+		font-size: 32px !important;
+	}
+	.jumbotron h1 {
+		font-size: 15px !important;
+	}
+
+	.jumbotron p {
+		color: #CFCFCF !important;
+		font-size: 15px;
+	}
+  }
